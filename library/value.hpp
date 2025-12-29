@@ -148,7 +148,7 @@ public:
 
 
     // ------------------------------------------------------------
-    // Python-style toString()
+    // toString()
     // ------------------------------------------------------------
     std::string str() const {
         if (isObject()) {
@@ -255,13 +255,8 @@ struct Dict {
 };
 
 
-// ------------------------------------------------------------
-// MODULE 2 — Python‑style operators
-// ------------------------------------------------------------
 
-// ------------------------------------------------------------
-// Helper: Python truthiness
-// ------------------------------------------------------------
+
 inline bool py_truth(const Value& v) {
     if (v.isBool()) return v.asBool();
     if (v.isInt()) return v.asInt() != 0;
@@ -277,13 +272,13 @@ inline bool py_truth(const Value& v) {
 // Arithmetic
 // ------------------------------------------------------------
 
-// Python-style addition
+
 inline Value add_builtin_func(const Value& a, const Value& b) {
     // string + string
     if (a.isString() && b.isString())
         return Value(a.asString() + b.asString());
 
-    // string + non-string → TypeError in Python
+    // string + non-string -> TypeError in Python
     if (a.isString() || b.isString())
         throw std::runtime_error("TypeError: can only concatenate str to str");
 
@@ -315,14 +310,14 @@ inline Value div_builtin_func(const Value& a, const Value& b) {
     return Value(a.asDouble() / b.asDouble());
 }
 
-// Python-style floor division
+// floor division
 inline Value floor_div_builtin_func(const Value& a, const Value& b) {
     double x = a.asDouble();
     double y = b.asDouble();
     return Value(std::floor(x / y));
 }
 
-// Python-style modulo
+// modulo
 inline Value mod_builtin_func(const Value& a, const Value& b) {
     double x = a.asDouble();
     double y = b.asDouble();
@@ -341,7 +336,7 @@ inline Value neg_builtin_func(const Value& a) {
 }
 
 // ------------------------------------------------------------
-// Boolean operators (Python truthiness)
+// Boolean operators
 // ------------------------------------------------------------
 inline Value not_op(const Value& v) {
     return Value(!py_truth(v));
@@ -359,7 +354,7 @@ inline Value or_op(const Value& a, const Value& b) {
 // Comparisons
 // ------------------------------------------------------------
 
-// Python-style <
+// <
 inline Value lt(const Value& a, const Value& b) {
     if (a.isDouble() || b.isDouble()) return Value(a.asDouble() < b.asDouble());
     if (a.isInt() || b.isInt()) return Value(a.asDouble() < b.asDouble());
@@ -388,7 +383,7 @@ inline Value ge(const Value& a, const Value& b) {
     throw std::runtime_error("TypeError: unsupported operand types for >=");
 }
 
-// Python-style equality
+// equality
 inline Value eq(const Value& a, const Value& b) {
     if (a.isInt() && b.isInt()) return Value(a.asInt() == b.asInt());
     if (a.isDouble() && b.isDouble()) return Value(a.asDouble() == b.asDouble());
@@ -448,9 +443,6 @@ inline Value eq(const Value& a, const Value& b) {
 inline Value ne(const Value& a, const Value& b) {
     return Value(!eq(a, b).asBool());
 }
-// ------------------------------------------------------------
-// MODULE 3 — Python‑style list operations
-// ------------------------------------------------------------
 
 // Helper: normalize Python negative index
 inline int normalize_index(int index, int size) {
@@ -459,28 +451,28 @@ inline int normalize_index(int index, int size) {
 }
 
 inline Value make_dict(std::initializer_list<std::pair<Value, Value>> items) {
-    Dict dict;  // Maak een lege Dict
+    Dict dict;  
     for (const auto& item : items) {
-        dict.add(item.first, item.second);  // Voeg elk paar toe aan de dict
+        dict.add(item.first, item.second); 
     }
-    return Value(std::make_shared<Dict>(dict));  // Retourneer een Value met een gedeelde pointer naar de Dict
+    return Value(std::make_shared<Dict>(dict));  
 }
 Value dict_get(Value& dictVal, const Value& key) {
-    // Probeer te casten naar een Dict, als het geen Dict is, maak een nieuwe
+
     std::shared_ptr<Dict> dict;
     
     try {
-        dict = dictVal.asDict();  // Probeer de Value als een Dict te behandelen
+        dict = dictVal.asDict();  
     } catch (const std::runtime_error&) {
-        // Als de Value geen Dict is, maak dan een nieuwe Dict aan
+ 
         dict = std::make_shared<Dict>();
-        dictVal = Value(dict);  // Zet de nieuwe Dict terug in de Value
+        dictVal = Value(dict); 
     }
     
-    // Zoek de sleutel in de Dict
+    // Search the key in the dict
     for (const auto& entry : dict->entries) {
-        if (eq(entry.first, key).asBool()) {  // Vergelijk de sleutel
-            return entry.second;  // Geef de waarde van de sleutel terug
+        if (eq(entry.first, key).asBool()) {
+            return entry.second; 
         }
     }
     
@@ -578,9 +570,6 @@ inline Value list_slice(const Value& listVal, int start, int stop, int step = 1)
 inline Value make_list(std::initializer_list<Value> items) {
     return Value(std::make_shared<List>(items));
 }
-// ------------------------------------------------------------
-// MODULE 5 — Utility functions
-// ------------------------------------------------------------
 
 // print(...) like Python print
 inline void print(const Value& v) {
