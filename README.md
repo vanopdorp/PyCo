@@ -1,4 +1,4 @@
 Function in development for next release
 
-[ ] decorator
-[ ] imports
+- [ ] Adding decorators.
+- [ ] Adding imports.
