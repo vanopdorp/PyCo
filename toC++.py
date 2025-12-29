@@ -374,7 +374,7 @@ class CppCompiler(ast.NodeVisitor):
         lines.append(f"    list_append({temp}, {elt_cpp});")
         lines.append("}")
 
-        # Dump in huidige scope
+        # Dump in the scope
         for line in lines:
             self.output_stack.append(line)
 
@@ -470,7 +470,7 @@ class CppCompiler(ast.NodeVisitor):
                 return f"neg_builtin_func({val})", "Value"
             if isinstance(node.op, ast.Not):  # not x
                 val, _ = self.compile_expr(node.operand)
-                return f"not_op({val})", "Value"  # of gebruik een bestaande functie die Value -> bool doet
+                return f"not_op({val})", "Value"  
         if isinstance(node, ast.BoolOp):
             values = [self.compile_expr(v)[0] for v in node.values]
             if isinstance(node.op, ast.And):
@@ -488,14 +488,13 @@ class CppCompiler(ast.NodeVisitor):
 
         # Calls
         if isinstance(node, ast.Call):
-            # super() of super(Class, self)
+            # super() or super(Class, self)
             if isinstance(node.func, ast.Attribute):
                 func = node.func
 
-                # Check of het een super() call is
+                # Check of it a super() call is
                 if isinstance(func.value, ast.Call) and isinstance(func.value.func, ast.Name) and func.value.func.id == "super":
 
-                    # super() zonder args → gebruik huidige class
                     if len(func.value.args) == 0:
                         base = self.class_bases.get(self.current_class)
                         if base is None:
@@ -512,13 +511,13 @@ class CppCompiler(ast.NodeVisitor):
                     else:
                         raise NotImplementedError("super() with unexpected arguments")
 
-                    # Methode naam
+                    # Method name
                     method = func.attr
 
                     # Compile arguments
                     args = [self.compile_expr(a)[0] for a in node.args]
 
-                    # Bouw C++ call
+                    # Build C++ calls
                     if method != "__init__":
                         return f"{base}__{method}(self{''.join(', ' + a for a in args)})", "Value"
                     else:
@@ -598,12 +597,7 @@ print(e.describe())
 for teller in range(1000000):
     uitkomst += 3 - 4373 - teller
 
-f = True
-g = False
-if not 1 < 3 and f or g:
-    print("da's raar")
-else:
-    print("klinkt logisch")
+
 lst = [1, 2, 3,"4"]
 lst.append(5.0)
 print(lst[0])
@@ -640,15 +634,15 @@ def dosom():
         indodo()
     indo()
 dosom()
-def geef_door(x=[]):
-    def doe_iets():
+def pass_it_on(x=[]):
+    def do_something():
         print(x)
-    doe_iets()
-geef_door("hallo")
-geef_door(1)
-geef_door(True)
-geef_door(None)
-geef_door(False)
+    do_something()
+pass_it_on("hello")
+pass_it_on(1)
+pass_it_on(True)
+pass_it_on(None)
+pass_it_on(False)
 
 
     """
