@@ -28,6 +28,65 @@ class Dog(Animal):
 dog = Dog("Rex", "Bulldog")
 print(dog.speak())
 ```
+### that compiles too
+```C++
+#include <iostream>
+#include "library/value.hpp"
+#include "library/range.hpp"
+#include "library/booleans.hpp"
+Value Animal__init__(Value self, Value name) {
+    self.asObject()->fields["name"] = name;
+    return Value();
+}
+Value Animal__speak(Value self) {
+    return add_builtin_func(Value("Hello "), self.asObject()->fields["name"]);
+}
+Value Animal__new__(Value cls_obj) {
+    auto obj = std::make_shared<Object>();
+    return Value(obj);
+}
+Value Animal__repr__(Value self) {
+    return Value("<Animal object>");
+}
+Value Animal(Value name) {
+    auto obj = std::make_shared<Object>();
+    obj->type_name = "Animal";
+    Value self(obj);
+    Animal__init__(self, name);
+    return self;
+}
+Value Dog__init__(Value self, Value name, Value breed) {
+    Animal__init__(self, name);
+    self.asObject()->fields["breed"] = breed;
+    return Value();
+}
+Value Dog__speak(Value self) {
+    return add_builtin_func(Value("Woof "), self.asObject()->fields["name"]);
+}
+Value Dog__new__(Value cls_obj) {
+    auto obj = std::make_shared<Object>();
+    return Value(obj);
+}
+Value Dog__repr__(Value self) {
+    return Value("<Dog object>");
+}
+Value Dog(Value name, Value breed) {
+    auto obj = std::make_shared<Object>();
+    obj->type_name = "Dog";
+    Value self(obj);
+    Dog__init__(self, name, breed);
+    return self;
+}
+int main() {
+    builtin_methods["Dog__repr__"] = Dog__repr__;
+    builtin_methods["Dog__new"] = Dog__new__;
+    builtin_methods["Animal__repr__"] = Animal__repr__;
+    builtin_methods["Animal__new"] = Animal__new__;
+    Value dog = Dog(Value("Rex"), Value("Bulldog"));
+    print(Dog__speak(dog));
+    return 0;
+}
+Woof```
 
 
 ## Searching for Developers
