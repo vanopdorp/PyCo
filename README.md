@@ -1,5 +1,4 @@
 Function in development for next release
 
-- [ ] Adding decorators. - in progress
-- [ ] Adding imports.
+- [ ] Adding imports. - in progress
 - [ ] Adding more builtin functions.
