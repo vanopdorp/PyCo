@@ -28,7 +28,7 @@ class Dog(Animal):
 dog = Dog("Rex", "Bulldog")
 print(dog.speak())
 ```
-### that compiles too
+### that compiles to
 ```C++
 #include <iostream>
 #include "library/value.hpp"
